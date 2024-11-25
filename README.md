@@ -174,6 +174,8 @@ Copiar código
     "preco": 50.00
   }
 ]
+
+
 Instruções Adicionais:
 Tecnologias: Utilize ASP.NET Core para criar a API e Entity Framework com SQLite para persistência de dados.
 Teste da API: Após a implementação, use o Swagger ou o Postman para testar os endpoints.
