@@ -1,0 +1,11 @@
+@MinhaApiComSQLite_HostAddress = http://localhost:5280
+
+GET {{MinhaApiComSQLite_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{MinhaApiComSQLite_HostAddress}}/todos/1
+Accept: application/json
+
+###
