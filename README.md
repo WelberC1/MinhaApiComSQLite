@@ -24,21 +24,21 @@ POST /api/produtos
 
 Corpo da requisição:
 json
-Copiar código
 {
   "nome": "produto exemplo",
   "preco": 50.00
 }
+
 Resposta esperada:
 
 Retorne o produto criado com o nome convertido para maiúsculas:
 json
-Copiar código
 {
   "id": 1,
   "nome": "PRODUTO EXEMPLO",
   "preco": 50.00
 }
+
 2. Obter Produtos (GET)
 Objetivo: Implementar o método para listar todos os produtos disponíveis.
 
@@ -59,7 +59,6 @@ GET /api/produtos
 Resposta esperada:
 
 json
-Copiar código
 [
   {
     "id": 1,
@@ -72,6 +71,7 @@ Copiar código
     "preco": 30.00
   }
 ]
+
 3. Atualizar Produto (PUT)
 Objetivo: Implementar o método para atualizar os dados de um produto existente.
 
@@ -94,20 +94,20 @@ PUT /api/produtos/{id}
 
 Corpo da requisição:
 json
-Copiar código
 {
   "nome": "produto novo",
   "preco": 80.00
 }
+
 Resposta esperada:
 
 json
-Copiar código
 {
   "id": 1,
   "nome": "Produto Novo",
   "preco": 80.00
 }
+
 4. Excluir Produto (DELETE)
 Objetivo: Implementar o método para excluir um produto da base de dados.
 
@@ -143,10 +143,10 @@ Preço negativo: "preco": -10.00 → Retornar 400 - Bad Request.
 Exemplo de Resposta de Erro:
 
 json
-Copiar código
 {
   "error": "O preço deve ser maior que zero."
 }
+
 6. Filtragem e Ordenação Avançada (Bônus)
 Objetivo: Implementar a capacidade de filtrar e ordenar a lista de produtos com base no nome e preço.
 
@@ -161,7 +161,6 @@ GET /api/produtos?nome=produto&ordem=desc
 Resposta esperada:
 
 json
-Copiar código
 [
   {
     "id": 2,
