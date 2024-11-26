@@ -43,14 +43,14 @@ namespace MinhaApiComSQLite
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Minha API com SQLite",
+                    Title = "API de Produtos",
                     Version = "v1",
                     Description = "API para gerenciar produtos com SQLite",
                     Contact = new OpenApiContact
                     {
-                        Name = "Seu Nome",
-                        Email = "seu.email@exemplo.com",
-                        Url = new Uri("https://seuwebsite.com")
+                        Name = "Welber Caetano",
+                        Email = "welbercaetanos1@gmail.com",
+                        Url = new Uri("https://github.com/WelberC1")
                     }
                 });
             });
