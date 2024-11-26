@@ -47,10 +47,32 @@ namespace MinhaApiComSQLite.Repositories
             return produtos.OrderBy(p => p.Preco).ToList();
         }
 
-        public Task<List<Produto>> GetProdutosWithFilterAndSorting(string nome, TipoOrdenacao tipoOrdenacao)
+        public async Task<List<Produto>> GetProdutosWithFilterAndSorting(string nome, TipoOrdenacao tipoOrdenacao)
         {
-            //esse aqui é um pouco mais complexo...
-            throw new NotImplementedException();
+            var query = _context.Produtos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(nome))
+            {
+                //peguei o nome que o usuario digitou e passei pra maiusculo, assim não será case sensitive
+                query = query.Where(p => p.Nome.ToUpper().Contains(nome.ToUpper()));
+            }
+
+            switch (tipoOrdenacao)
+            {
+                //o sqlite nao ordena suporta ordenacao de numeros do tipo decimal
+                //então fiz uma conversão direta pra double, assim ele consegue filtrar
+                case TipoOrdenacao.ASC:
+                    query = query.OrderBy(p => (double) p.Preco);
+                    break;
+                case TipoOrdenacao.DES:
+                    query = query.OrderByDescending(p => (double) p.Preco);
+                    break;
+                default:
+                    query = query.OrderBy(p => (double) p.Preco);
+                    break;
+            }
+
+            return await query.ToListAsync();
         }
 
         //atualiza produtos
@@ -62,7 +84,6 @@ namespace MinhaApiComSQLite.Repositories
             {
                 return null;
             }
-
 
             //pensei em fazer as validacoes em um if só utilizando o ||, mas prefiro o modelo individual de mensagem de erro
             //fica mais facil pra identificar um eventual problema.
@@ -84,7 +105,6 @@ namespace MinhaApiComSQLite.Repositories
 
             return produto;
         }
-
 
         public async Task<bool> DeleteProduto(int ID)
         {

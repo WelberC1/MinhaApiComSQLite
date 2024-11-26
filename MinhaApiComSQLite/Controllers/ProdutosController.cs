@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MinhaApiComSQLite.Enums;
 using MinhaApiComSQLite.Models;
 using MinhaApiComSQLite.Repositories.Interfaces;
 using System.Collections.Generic;
@@ -26,6 +27,28 @@ namespace MinhaApiComSQLite.Controllers
             try
             {
                 var produtos = await _produtoRepository.GetAllProdutos();
+                return Ok(produtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        // GET api/Produtos/Pesquisa?nome=NOTEBOOK&tipoOrdenacao=ASC ou DES
+        [HttpGet("Pesquisa")]
+        public async Task<ActionResult<IEnumerable<Produto>>> GetProdutosWithFilterAndSorting([FromQuery] string nome, [FromQuery] TipoOrdenacao tipoOrdenacao)
+        {
+            try
+            {
+                var produtos = await _produtoRepository.GetProdutosWithFilterAndSorting(nome, tipoOrdenacao);
+
+                //se a lista tiver vazia, não foi encontrado nenhum produto com aqueles parâmetros= 404 e a mensagem
+                if (produtos == null || produtos.Count == 0)
+                {
+                    return NotFound(new { error = "Nenhum produto encontrado com o nome especificado." });
+                }
+
                 return Ok(produtos);
             }
             catch (Exception ex)
