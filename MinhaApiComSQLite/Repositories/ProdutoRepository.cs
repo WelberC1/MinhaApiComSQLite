@@ -2,8 +2,7 @@
 using MinhaApiComSQLite.Enums;
 using MinhaApiComSQLite.Models;
 using MinhaApiComSQLite.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore; // Use o namespace correto
-
+using Microsoft.EntityFrameworkCore;
 
 namespace MinhaApiComSQLite.Repositories
 {
@@ -11,14 +10,14 @@ namespace MinhaApiComSQLite.Repositories
     {
         private readonly AppDbContext _context;
 
-        public ProdutoRepository(AppDbContext _context) 
-        { 
+        public ProdutoRepository(AppDbContext _context)
+        {
             this._context = _context;
         }
 
         public async Task<Produto> AddProduto(Produto produto)
         {
-            //primeira validação: O nome não pode estar vazio ou em branco.
+            //primeira validação: o nome não pode estar vazio ou em branco.
             if (string.IsNullOrWhiteSpace(produto.Nome))
                 throw new ArgumentException("O nome do produto não pode ser vazio ou nulo.");
 
@@ -33,23 +32,10 @@ namespace MinhaApiComSQLite.Repositories
             return produto;
         }
 
-        public async Task<bool> DeleteProduto(int ID)
-        {
-            var produto = await _context.Produtos.FindAsync(ID);
-
-            if (produto == null)
-                return false; 
-
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
         public async Task<List<Produto>> GetAllProdutos()
         {
             //busca todos produtos e coloca numa lista
-            var produtos= await _context.Produtos.ToListAsync();
+            var produtos = await _context.Produtos.ToListAsync();
 
             //passa por todos produtos da lista e verifica se estão em promoção
             foreach (var produto in produtos)
@@ -57,6 +43,7 @@ namespace MinhaApiComSQLite.Repositories
                 if (produto.Nome.Contains("PROMOÇÃO", StringComparison.OrdinalIgnoreCase))
                     produto.Nome = $"{produto.Nome} [Em Promoção]";
             }
+
             return produtos.OrderBy(p => p.Preco).ToList();
         }
 
@@ -73,25 +60,43 @@ namespace MinhaApiComSQLite.Repositories
 
             if (produto == null)
             {
-                throw new Exception("Produto não encontrado.");
+                return null;
             }
 
-            if (produtoAtualizado.Preco < 0)
+
+            //pensei em fazer as validacoes em um if só utilizando o ||, mas prefiro o modelo individual de mensagem de erro
+            //fica mais facil pra identificar um eventual problema.
+            if (produtoAtualizado.Preco <= 0)
             {
-                throw new Exception("O preço não pode ser menor que zero.");
+                throw new ArgumentException("O preço deve ser maior que zero.");
             }
-
-            if (!string.IsNullOrEmpty(produtoAtualizado.Nome))
+            
+            if (string.IsNullOrWhiteSpace(produtoAtualizado.Nome))
             {
-                produtoAtualizado.Nome = LetraMaiusculaPrimeiraLetra(produtoAtualizado.Nome);
+                throw new ArgumentException("O nome do produto não pode ser vazio ou nulo.");
             }
 
-            produto.Nome = produtoAtualizado.Nome;
+            //coloca a primeira letra em maiusculo 
+            produto.Nome = LetraMaiusculaPrimeiraLetra(produtoAtualizado.Nome);
             produto.Preco = produtoAtualizado.Preco;
 
             await _context.SaveChangesAsync();
 
             return produto;
+        }
+
+
+        public async Task<bool> DeleteProduto(int ID)
+        {
+            var produto = await _context.Produtos.FindAsync(ID);
+
+            if (produto == null)
+                return false;
+
+            _context.Produtos.Remove(produto);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         //o nome do método é ruim, mas basicamente ele vai separar o nome do produto em dois utilizando o split (defini o espaço pra ser o separador).
@@ -101,7 +106,5 @@ namespace MinhaApiComSQLite.Repositories
             return string.Join(" ", str.Split(' ')
                                        .Select(word => char.ToUpper(word[0]) + word.Substring(1).ToLower()));
         }
-
-
     }
 }
