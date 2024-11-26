@@ -14,6 +14,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using MinhaApiComSQLite.Data;
 using Microsoft.EntityFrameworkCore;
+using MinhaApiComSQLite.Repositories;
 
 namespace MinhaApiComSQLite
 {
@@ -32,6 +33,8 @@ namespace MinhaApiComSQLite
             // Configurar banco de dados SQLite
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddScoped<ProdutoRepository>();
 
             // Configurar o Swagger
             services.AddEndpointsApiExplorer();

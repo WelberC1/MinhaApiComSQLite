@@ -2,6 +2,7 @@
 using MinhaApiComSQLite.Data;
 using MinhaApiComSQLite.Models;
 using Microsoft.EntityFrameworkCore;
+using MinhaApiComSQLite.Repositories;
 
 namespace MinhaApiComSQLite.Controllers
 {
@@ -9,18 +10,40 @@ namespace MinhaApiComSQLite.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ProdutoRepository produtoRepository;
 
-        public ProdutosController(AppDbContext context)
+        public ProdutosController(ProdutoRepository produtoRepository)
         {
-            _context = context;
+            this.produtoRepository = produtoRepository;
         }
 
         // GET: api/Produtos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProdutos()
         {
-            return await _context.Produtos.ToListAsync();
+            return await produtoRepository.GetAllProdutos();
+        }
+
+        // POST: api/Produtos -> obj. produto obtido no corpo da requisição
+        [HttpPost]
+        public async Task<ActionResult<Produto>> AddProduto([FromBody] Produto produto)
+        {
+            return await produtoRepository.AddProduto(produto);
+        }
+
+
+        // PUT: api/Produtos/id
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Produto>> UpdateProduto([FromRoute] int id, [FromBody] Produto produto)
+        {
+            return await produtoRepository.UpdateProduto(id, produto);
+        }
+
+        // DELETE: api/Produtos/id
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<bool>> DeleteProduto(int id)
+        {
+            return await produtoRepository.DeleteProduto(id);
         }
     }
 }
