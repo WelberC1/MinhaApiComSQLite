@@ -2,7 +2,7 @@
 
 Olá, tudo bem? Essa é minha versão da API de produtos. Implementei todas as funcionalidades propostas no desafio.
 
-#Tecnologias utilizadas
+# Tecnologias utilizadas
 
 ASP.NET Core;
 Entity Framework; 
